@@ -6,13 +6,13 @@
 \usepackage{booktabs}
 \usepackage[sort,compress]{cite}
 \usepackage{url}
-\usepackage[font=footnotesize,labelfont=bf,skip=2pt]{caption}
+\usepackage[font=scriptsize,labelfont=bf,skip=1pt]{caption}
 
-\setlength{\textfloatsep}{3pt plus 1pt minus 1pt}
+\setlength{\textfloatsep}{2pt plus 1pt minus 1pt}
 \setlength{\floatsep}{2pt plus 1pt minus 1pt}
-\setlength{\intextsep}{3pt plus 1pt minus 1pt}
+\setlength{\intextsep}{2pt plus 1pt minus 1pt}
 \setlength{\dblfloatsep}{3pt plus 1pt minus 1pt}
-\setlength{\dbltextfloatsep}{3pt plus 1pt minus 1pt}
+\setlength{\dbltextfloatsep}{2pt plus 1pt minus 1pt}
 \setlength{\abovedisplayskip}{3pt plus 1pt minus 1pt}
 \setlength{\belowdisplayskip}{3pt plus 1pt minus 1pt}
 
@@ -21,8 +21,8 @@
 \let\endoldthebibliography\endthebibliography
 \renewenvironment{thebibliography}[1]{%
   \oldthebibliography{#1}%
-  \scriptsize
-  \setlength{\itemsep}{0pt}%
+  \fontsize{6.1}{6.35}\selectfont
+  \setlength{\itemsep}{-0.2pt}%
   \setlength{\parsep}{0pt}%
   \setlength{\parskip}{0pt}%
 }{\endoldthebibliography}
@@ -40,7 +40,7 @@
 % NOTE TO AUTHOR: please verify/complete affiliation, city/country and
 % e-mail address below before submission.
 \author{
-\IEEEauthorblockN{Rahul Rajeevkumar Urs}
+\IEEEauthorblockN{Rahul Rajeevkumar Urs and Abdelrahman E. Eltoukhy}
 \IEEEauthorblockA{
 Khalifa University\\
 Abu Dhabi, United Arab Emirates\\
@@ -272,6 +272,8 @@ The cost-reliability Pareto front in Fig.~\ref{fig:pareto} plots all 2409 config
 
 From a design-screening perspective, the frontier separates capacity that changes resilience from capacity that only increases cost. Designs below the knee are cheaper but leave sampled diesel energy; designs beyond the selected point add autonomy without changing the outage set. The chosen point should therefore be read as the least-cost sampled-reliable boundary, not as a universal optimum under every tariff, carbon price or outage distribution.
 
+The labelled frontier also clarifies the grey design cloud. Several high-capacity combinations approach the selected reliability level at higher LCOE, because added PV or autonomy is useful only when it changes the worst residual outage draw. Low-cost points are attractive for energy procurement but remain backup-incomplete. Thus the planning question is not whether hydrogen is cheaper than grid supply, but what premium removes sampled diesel dispatch while retaining the genset as contingency.
+
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=0.92\columnwidth]{fig5_pareto_front.pdf}
@@ -294,6 +296,8 @@ The selected design -- PV~=~22~MW, EZ~=~10~MW, FC~=~5~MW, 57-h tank -- achieves 
 Annualised cost rises from \$4.838M~yr$^{-1}$ to \$7.392M~yr$^{-1}$, a 52.8\% increase, while CO\textsubscript{2} falls from 24.6 to 13.7~kt~yr$^{-1}$ (44.5\% reduction), giving \$233.6~tCO\textsubscript{2}$^{-1}$ abatement. The bar decomposition shows that the premium is driven by the PV-electrolyser-fuel-cell-tank chain, not by retained diesel fixed cost, which is common to both cases. Proposed-system cost comprises PV \$1.663M, electrolyser \$1.492M, fuel cell \$0.839M, hydrogen tank \$1.121M, net grid exchange \$1.819M, and diesel fixed cost \$0.458M~yr$^{-1}$. Since $\mathrm{EUE}_{\mathrm{yr}}=0$, the genset burns no fuel and $f_E=100\%$.
 
 Relative to the companion battery result, hydrogen removes the sampled diesel energy rather than merely reducing it, but at a much larger cost premium. It is therefore a reliability-first option, with the diesel retained for events outside the sampled design envelope.
+
+The baseline comparison in Fig.~\ref{fig:comparison} is therefore a resilience and emissions trade-off rather than a conventional least-cost expansion result. PV, electrolyser, fuel-cell and tank capacity are under-utilised during ordinary grid-connected operation, but they provide a specific reliability function during long islanded events. The 44.5\% CO$_2$ reduction is achieved without assuming diesel removal: existing diesel capacity remains available outside the Monte Carlo sample, while sampled design-basis events are served by PV and stored hydrogen.
 
 Across the figures, the design message is consistent. The resource profile defines the PV-surplus window and cooling penalty; the outage dispatch shows the residual night-time tank duty; the heat map locates the 57-h reliability threshold; the Pareto front prices the move to zero sampled unmet energy; and the baseline comparison shows that the result is a decarbonising resilience design, not a least-cost energy-procurement case.
 
