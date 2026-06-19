@@ -21,8 +21,8 @@
 \let\endoldthebibliography\endthebibliography
 \renewenvironment{thebibliography}[1]{%
   \oldthebibliography{#1}%
-  \fontsize{6.1}{6.35}\selectfont
-  \setlength{\itemsep}{-0.2pt}%
+  \fontsize{6.25}{6.45}\selectfont
+  \setlength{\itemsep}{-0.1pt}%
   \setlength{\parsep}{0pt}%
   \setlength{\parskip}{0pt}%
 }{\endoldthebibliography}
@@ -37,20 +37,18 @@
 
 \title{Monte Carlo Reliability Sizing of PV--Hydrogen Backup for Data-Centre Energy-Internet Nodes}
 
-% NOTE TO AUTHOR: please verify/complete affiliation, city/country and
-% e-mail address below before submission.
 \author{
 \IEEEauthorblockN{Rahul Rajeevkumar Urs and Abdelrahman E. Eltoukhy}
 \IEEEauthorblockA{
 Khalifa University\\
 Abu Dhabi, United Arab Emirates\\
-rahul.urs@ku.ac.ae}
+rahul.urs@ku.ac.ae; abdelrahman.eltoukhy@ku.ac.ae}
 }
 
 \maketitle
 
 \begin{abstract}
-Data centres are emerging as controllable Energy-Internet nodes, yet renewable-integration studies often separate grid-connected cost/carbon optimisation from outage backup. This paper presents a reliability-constrained sizing framework for a photovoltaic (PV)--electrolyser--fuel cell--hydrogen storage--grid microgrid serving a 24/7 data centre, with an existing N+1 diesel genset retained as the backstop for any residual outage energy. Hourly grid-connected dispatch is run to hydrogen-inventory steady state and coupled to a 5000-event Monte Carlo outage assessment. For a 5~MW critical-IT data centre in Abu Dhabi, the lowest-cost design with zero unmet energy across the sampled outages uses 22~MW PV, a 10~MW electrolyser, a 5~MW fuel cell and a 17{,}102~kg (57-hour) H$_2$ tank; it attains $P_{\mathrm{survive}}=1.000$ over the sampled events and an LCOE of 0.1272~\$~kWh\textsuperscript{-1}. Relative to a grid-plus-diesel baseline serving the same load and design-basis outage energy, this design cuts annual CO\textsubscript{2} emissions by 44.5\% at a 52.8\% cost increase, equivalent to \$233.6~tCO\textsubscript{2}\textsuperscript{-1}. The central result is structural: unlike a diurnally cycling, power-rate-limited battery, the H$_2$ tank fills opportunistically over the year, so outage survival rises monotonically with autonomy until the sampled outage draw is covered.
+This paper presents a reliability-constrained sizing framework for a photovoltaic (PV)--electrolyser--fuel cell--hydrogen storage--grid microgrid serving a 24/7 data centre, with an existing N+1 diesel genset retained as residual backup. Hourly grid-connected dispatch is run to hydrogen-inventory steady state and coupled to a 5000-event Monte Carlo outage assessment. For a 5~MW critical-IT data centre in Abu Dhabi, the lowest-cost sampled-reliable design uses 22~MW PV, a 10~MW electrolyser, a 5~MW fuel cell and a 17{,}102~kg (57-hour) H$_2$ tank; it has zero unmet energy over those sampled events and an LCOE of 0.1272~\$~kWh\textsuperscript{-1}. Relative to a grid-plus-diesel baseline serving the same design-basis outage energy, it cuts annual CO\textsubscript{2} by 44.5\% at a 52.8\% cost increase, equivalent to \$233.6~tCO\textsubscript{2}\textsuperscript{-1}. The central result is structural: unlike a diurnally cycling, power-rate-limited battery, the H$_2$ tank fills opportunistically over the year, so sampled outage survival rises with autonomy until the design-basis outage draw is covered.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -86,7 +84,7 @@ Global electricity demand from data centres, artificial intelligence and cryptoc
 
 Reliability remains the dominant constraint. Power remains the leading cause of impactful outages \cite{uptime2026}, while conventional resilience is still mainly provided by diesel generator sets. Hydrogen produced from PV surplus, stored on site, and reconverted through a fuel cell has therefore become a candidate long-duration, diesel-displacing backup pathway. A 1.5~MW proton-exchange-membrane (PEM) fuel cell has already supported a Microsoft data-centre backup demonstration over a simulated 48-hour event \cite{catmsft2024}, and techno-economic studies now examine fuel-cell-powered and hybrid electrolyser--fuel-cell data-centre concepts \cite{kurtz2023,ai2026}.
 
-Existing work covers renewable/hydrogen sizing in power networks \cite{kayacik2024} and data-centre fuel-cell economics \cite{kurtz2023}. However, it has not jointly examined a Monte Carlo outage-survival metric, a retained diesel backstop representative of retrofit practice, and a storage-autonomy sweep that reveals whether reliability saturates before all sampled outage energy is covered.
+Existing work covers renewable/hydrogen sizing in power networks \cite{kayacik2024} and data-centre fuel-cell economics \cite{kurtz2023}, but not the joint problem of Monte Carlo outage survival, retained-diesel retrofit practice, and autonomy sweeps that reveal whether reliability saturates before all sampled outage energy is covered.
 
 The work contributes a steady-state PV--H$_2$ dispatch model, Numba-compiled outage Monte Carlo kernels \cite{lam2015numba}, a refined 2409-configuration Abu Dhabi sizing sweep, and a diesel-retained baseline comparison. The main finding is that hydrogen survival does not exhibit the sub-unity saturation seen in a companion battery-only case: additional autonomy keeps improving survival until the sampled outage energy is covered.
 
@@ -154,12 +152,12 @@ Both the normal-mode dispatch and the outage Monte Carlo are implemented as expl
 
 \subsection{Reliability Metric}
 
-For each sizing, $N=5000$ outage events $(t_0^{(i)}, d^{(i)})$ are drawn from a shared set of start hours and durations: 60\% transient, $U(0.25,2)$~h; 30\% medium, $U(2,12)$~h; and 10\% extended, $U(12,96)$~h. Each event is simulated in islanded mode from the steady-state hydrogen inventory at $t_0^{(i)}$, yielding unmet energy $u^{(i)}$. The empirical Outage Survival Probability is
+For each sizing, $N=5000$ outage events $(t_0^{(i)}, d^{(i)})$ are drawn from a shared design-basis mixture rather than fitted site records: 60\% transient, $U(0.25,2)$~h; 30\% medium, $U(2,12)$~h; and 10\% extended, $U(12,96)$~h. Each event is simulated in islanded mode from the steady-state hydrogen inventory at $t_0^{(i)}$, yielding unmet energy $u^{(i)}$. The empirical Outage Survival Probability is
 \begin{equation}
 P_{\mathrm{survive}} = \frac{1}{N}\sum_{i=1}^{N} \mathbb{1}\!\left[u^{(i)} \le \varepsilon\right],
 \label{eq:psurvive}
 \end{equation}
-i.e.\ the fraction of events fully served by PV+H\textsubscript{2} alone ($\varepsilon=10^{-9}$~MWh). A complementary energy-coverage fraction,
+i.e.\ the fraction of sampled events fully served by PV+H\textsubscript{2} alone ($\varepsilon=10^{-9}$~MWh). Thus $P_{\mathrm{survive}}=1.000$ means no failures in this 5000-event design envelope, not zero risk outside it. A complementary energy-coverage fraction,
 \begin{equation}
 f_E = 1 - \frac{\mathrm{EUE}_{\mathrm{yr}}}{E_{\mathrm{outage,total}}},
 \qquad
@@ -181,11 +179,12 @@ applied at $r=7\%$ over each component's own economic lifetime $n$ (Table~\ref{t
 m_{H_2} = \frac{a \cdot P_{FC}\cdot 1000}{\eta_{FC}\cdot\mathrm{LHV}_{H_2}}\;\;[\mathrm{kg}],
 \label{eq:h2mass}
 \end{equation}
-where $P_{FC}$ is the fuel cell power rating [MW], $\eta_{FC}=0.50$ and $\mathrm{LHV}_{H_2}=33.33$~kWh~kg$^{-1}$. PV capex/lifetime follow NREL's 2024 ATB \cite{nrelatb2024}. The electrolyser capex is set to \$1{,}250~kW$^{-1}$ as a cost-down scenario; DOE Record \#24005 provides the 57~kWh~kg$^{-1}$ PEM specific energy and reports a higher current installed-cost range \cite{doe24005}. Fuel-cell and storage assumptions follow the literature ranges in \cite{kayacik2024}. Grid prices (\$0.080/\$0.030~kWh$^{-1}$) are scenario values benchmarked to published Abu Dhabi tariffs \cite{rsbtariffs}; grid carbon intensity is 0.450~kg~kWh$^{-1}$, above the UAE 2030 target of 0.27~kg~kWh$^{-1}$ \cite{uaees2050}. Annualised system cost sums capex, fixed O\&M and net grid exchange; dividing by annual demand gives LCOE. The carbon-free-energy fraction is
+where $P_{FC}$ is the fuel cell power rating [MW], $\eta_{FC}=0.50$ and $\mathrm{LHV}_{H_2}=33.33$~kWh~kg$^{-1}$. This is nominal full-power fuel-cell autonomy; actual event-specific hydrogen draw is lower when PV directly serves part of the islanded load. PV capex/lifetime follow NREL's 2024 ATB \cite{nrelatb2024}. The electrolyser capex is set to \$1{,}250~kW$^{-1}$ as a cost-down scenario; DOE Record \#24005 provides the 57~kWh~kg$^{-1}$ PEM specific energy and reports a higher current installed-cost range \cite{doe24005}. Fuel-cell and storage assumptions follow the literature ranges in \cite{kayacik2024}. Grid prices (\$0.080/\$0.030~kWh$^{-1}$) are scenario values benchmarked to published Abu Dhabi tariffs \cite{rsbtariffs}; grid carbon intensity is 0.450~kg~kWh$^{-1}$, above the UAE 2030 target of 0.27~kg~kWh$^{-1}$ \cite{uaees2050}. Annualised system cost sums capex, fixed O\&M and net grid exchange; dividing by annual demand gives LCOE. The carbon-free-energy fraction is
 \begin{equation}
 \mathrm{CFE} = 1 - \frac{E_{\mathrm{grid,import}}}{E_{\mathrm{load}}}.
 \label{eq:cfe}
 \end{equation}
+This is an annual import-based grid-dependence proxy, not a 24/7 hourly clean-energy matching metric.
 
 \begin{table}[t]
 \centering
@@ -242,7 +241,7 @@ This profile explains why PV capacity is selected above the mean load rather tha
 
 Islanded dispatch for the selected design (PV~=~22~MW, EZ~=~10~MW, FC~=~5~MW, 57-h/17{,}102-kg tank) is illustrated in Fig.~\ref{fig:outage} for the most H$_2$-demanding event in the 5000-trial set: an 87.19-hour outage requiring 56.95~h of fuel-cell-equivalent hydrogen after direct PV service. The power panel separates the two reliability mechanisms: PV covers daylight critical load, while the fuel cell supplies night-time and low-irradiance deficits up to its 5~MW rating. The tank falls from 100\% to 0.1\%, indicating a reliability-tight design rather than excess storage. The diesel genset is retained for contingency but is not dispatched.
 
-The outage trace also highlights a modelling choice that affects interpretation. Islanded PV surplus is curtailed rather than routed to the electrolyser, so the tank cannot recharge during the event. The selected design is therefore sized for a conservative outage-only reserve policy; allowing islanded electrolysis could reduce curtailment in long sunny outages, but would require additional controls, safety interlocks and operating validation.
+Islanded PV surplus is curtailed rather than routed to the electrolyser, so the tank cannot recharge during the event. This conservative reserve policy makes the selected point reliability-tight: the tank ends at 0.1\%, and each extra hour of full-power fuel-cell reserve would add about 300~kg of usable H$_2$ by Eq.~(\ref{eq:h2mass}) if margin beyond the sampled events is required.
 
 \begin{figure*}[!t]
 \centering
@@ -293,17 +292,17 @@ The selected design -- PV~=~22~MW, EZ~=~10~MW, FC~=~5~MW, 57-h tank -- achieves 
 \label{fig:comparison}
 \end{figure}
 
-Annualised cost rises from \$4.838M~yr$^{-1}$ to \$7.392M~yr$^{-1}$, a 52.8\% increase, while CO\textsubscript{2} falls from 24.6 to 13.7~kt~yr$^{-1}$ (44.5\% reduction), giving \$233.6~tCO\textsubscript{2}$^{-1}$ abatement. The bar decomposition shows that the premium is driven by the PV-electrolyser-fuel-cell-tank chain, not by retained diesel fixed cost, which is common to both cases. Proposed-system cost comprises PV \$1.663M, electrolyser \$1.492M, fuel cell \$0.839M, hydrogen tank \$1.121M, net grid exchange \$1.819M, and diesel fixed cost \$0.458M~yr$^{-1}$. Since $\mathrm{EUE}_{\mathrm{yr}}=0$, the genset burns no fuel and $f_E=100\%$.
+Annualised cost rises from \$4.838M~yr$^{-1}$ to \$7.392M~yr$^{-1}$, while CO\textsubscript{2} falls from 24.6 to 13.7~kt~yr$^{-1}$, giving a 52.8\% cost premium, 44.5\% CO\textsubscript{2} reduction and \$233.6~tCO\textsubscript{2}$^{-1}$ abatement. Proposed-system cost comprises PV \$1.663M, electrolyser \$1.492M, fuel cell \$0.839M, hydrogen tank \$1.121M, net grid exchange \$1.819M, and diesel fixed cost \$0.458M~yr$^{-1}$. Since $\mathrm{EUE}_{\mathrm{yr}}=0$ within the sampled design-basis events, the genset burns no fuel and $f_E=100\%$ in this comparison.
 
-Relative to the companion battery result, hydrogen removes the sampled diesel energy rather than merely reducing it, but at a much larger cost premium. It is therefore a reliability-first option, with the diesel retained for events outside the sampled design envelope.
+A local $\pm20\%$ perturbation of annualised PV-H$_2$ component costs, without re-optimising size, moves proposed LCOE from 0.108 to 0.146~\$~kWh$^{-1}$ and abatement cost from about \$140 to \$328~tCO\textsubscript{2}$^{-1}$. Reliability is unchanged because physical size is unchanged, but component-specific sensitivities could shift the least-cost point.
 
-The baseline comparison in Fig.~\ref{fig:comparison} is therefore a resilience and emissions trade-off rather than a conventional least-cost expansion result. PV, electrolyser, fuel-cell and tank capacity are under-utilised during ordinary grid-connected operation, but they provide a specific reliability function during long islanded events. The 44.5\% CO$_2$ reduction is achieved without assuming diesel removal: existing diesel capacity remains available outside the Monte Carlo sample, while sampled design-basis events are served by PV and stored hydrogen.
+Relative to the companion battery result, hydrogen removes sampled diesel energy rather than merely reducing it, but at a larger premium. Fig.~\ref{fig:comparison} is therefore a resilience/emissions trade-off, not a least-cost expansion result: existing diesel remains available outside the Monte Carlo sample, while sampled design-basis events are served by PV and stored hydrogen.
 
-Across the figures, the design message is consistent. The resource profile defines the PV-surplus window and cooling penalty; the outage dispatch shows the residual night-time tank duty; the heat map locates the 57-h reliability threshold; the Pareto front prices the move to zero sampled unmet energy; and the baseline comparison shows that the result is a decarbonising resilience design, not a least-cost energy-procurement case.
+Across the figures, the resource profile defines the PV-surplus window and cooling penalty; the outage dispatch shows residual night-time tank duty; the heat map locates the 57-h reliability threshold; the Pareto front prices the move to zero sampled unmet energy; and the baseline comparison confirms a decarbonising resilience design rather than a least-cost energy-procurement case.
 
 \section{Conclusion}
 
-This study presented a reliability-constrained sizing and dispatch framework for a PV-electrolyser-fuel-cell-H$_2$-grid data-centre microgrid with retained diesel backstop. For a 5~MW Abu Dhabi case, the lowest-cost sampled-reliable design uses 22~MW PV and a 57-hour (17{,}102-kg) tank, achieving $P_{\mathrm{survive}}=1.000$, $\mathrm{CFE}=0.443$ and $\mathrm{LCOE}=0.1272$~\$~kWh$^{-1}$. It cuts CO\textsubscript{2} by 44.5\% at a 52.8\% cost premium, or about \$233.6~tCO\textsubscript{2}$^{-1}$. The central mechanism is annual hydrogen inventory accumulation: survival keeps improving with autonomy until the sampled outage draw is covered. Future work should test hybrid battery-hydrogen sizing, measured outage/weather sequences, multiple climates and electrolyser operation during extended outages.
+This study presented a reliability-constrained sizing framework for a PV-electrolyser-fuel-cell-H$_2$-grid data-centre microgrid with retained diesel backstop. For a 5~MW Abu Dhabi case, the lowest-cost sampled-reliable design uses 22~MW PV and a 57-hour tank, achieving $P_{\mathrm{survive}}=1.000$ over 5000 design-basis events, $\mathrm{CFE}=0.443$ and $\mathrm{LCOE}=0.1272$~\$~kWh$^{-1}$. It cuts CO\textsubscript{2} by 44.5\% at a 52.8\% cost premium under base assumptions. Future work should test hybrid battery-hydrogen sizing, measured outage/weather sequences, multiple climates, component-specific sensitivities and electrolyser operation during extended outages.
 
 \bibliographystyle{IEEEtran}
 \bibliography{refs}
